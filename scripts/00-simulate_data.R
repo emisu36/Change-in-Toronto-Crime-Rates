@@ -1,19 +1,28 @@
 #### Preamble ####
-# Purpose: Simulates... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Purpose: Simulates Crime Rates in Toronto
+# Author: Ping-Jen (Emily) Su
+# Date: 23 Janurary 2024 
+# Contact: emily.su@mail.utoronto.ca
+# Pre-requisites: Need to retrieve the data of crime rates in Toronto
 
+# install.packages("tidyverse")
+# install.packages("janitor")
 
 #### Workspace setup ####
 library(tidyverse)
-# [...UPDATE THIS...]
+library(janitor)
+library(usethis)
+library(gitcreds)
 
 #### Simulate data ####
-# [...ADD CODE HERE...]
+simulated_data <-
+  tibble(
+    "Year" = 1:10,
+    "Robbery" = sample(10000:100000,size=10, replace=TRUE),
+    "Homocide" = sample(10000:100000, size=10, replace=TRUE)
+  )
+
+simulated_data
 
 
 
