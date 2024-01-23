@@ -1,26 +1,21 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 11 February 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
-# License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
-
+# Purpose: Simulates Crime Rates in Toronto
+# Author: Ping-Jen (Emily) Su
+# Date: 23 Janurary 2024 
+# Contact: emily.su@mail.utoronto.ca
+# Pre-requisites: Need to retrieve the data of crime rates in Toronto
 
 #### Workspace setup ####
+# install.packages("opendatatoronto")
 library(opendatatoronto)
 library(tidyverse)
-# [...UPDATE THIS...]
 
 #### Download data ####
-# [...ADD CODE HERE TO DOWNLOAD...]
-
-
+toronto_crime_rates <- list_package_resources("https://open.toronto.ca/dataset/neighbourhood-crime-rates/") %>% 
+  head(1)
 
 #### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_data, "inputs/data/raw_data.csv") 
+trt_crime_statistics <- toronto_crime_rates %>% get_resource()
+
 
          
