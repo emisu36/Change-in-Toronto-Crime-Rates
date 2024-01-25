@@ -2,9 +2,7 @@
 
 ## Overview
 
-This repo provides students with a foundation for their own projects associated with *Telling Stories with Data*. You do not need every aspect for every paper and you should delete aspects that you do not need.
-
-To use this folder, click the green "Code" button", then "Download ZIP". Move the downloaded folder to where you want to work on your own computer, and then modify it to suit.
+This study looks into how Toronto neighborhood crime rates have been affected by the COVID-19 outbreak. Using pre-pandemic and post-pandemic crime statistics, we determine the top five neighbourhoods with the highest overall crime rates. This research shows that, following COVID-19, crime rates in these communities  decreased. The findings give policymakers and community stakeholders new information on the connection between a global health crisis and local criminal dynamics.
 
 ## File Structure
 

@@ -40,17 +40,14 @@ We begin our analysis using crime data from Toronto neighborhoods. The dataset, 
 
 
 
-Our initial examination reveals the neighborhoods with the highest crime rates in 2019.
-
-
 
 # Results
 
-Next, we explore the crime rates for the same neighborhoods in 2023.
+The figures (@fig-2019-low, @fig-2019-high, @fig-2023-low, @fig-2023-high) are generated with the help of tools made by @knitr and @kableextra.
 
 ```{r}
 #| label: fig-2019-high
-#| tbl-cap: Shows the 5 Neighborhoods in 2019 with the highest crime rates
+#| fig-cap: Shows the 5 Neighborhoods in 2019 with the highest crime rates
 #| echo: false
 #| warning: false
 #| message: false
@@ -89,7 +86,7 @@ ggplot(top_5_neighborhoods1, aes(x = reorder(AREA_NAME, -Total_Crime_Rate), y = 
 #| echo: false
 #| eval: true
 #| label: fig-2019-low
-#| tbl-cap: Shows the 5 Neighborhoods in 2019 with the lowest crime rates
+#| fig-cap: Shows the 5 Neighborhoods in 2019 with the lowest crime rates
 #| warning: false
 #| message: false
 
@@ -122,7 +119,7 @@ ggplot(bottom_5_neighborhoods1, aes(x = reorder(AREA_NAME, Total_Crime_Rate), y 
 #| eval: true
 #| warning: false
 #| label: fig-2023-high
-#| tbl-cap: Shows the 5 Neighborhoods in 2023 with the highest crime rates
+#| fig-cap: Shows the 5 Neighborhoods in 2023 with the highest crime rates
 #| message: false
 
 # library(rstanarm)
@@ -163,7 +160,7 @@ ggplot(top_5_neighborhoods, aes(x = reorder(AREA_NAME, -Total_Crime_Rate), y = T
 #| echo: false
 #| eval: true
 #| label: fig-2023-low
-#| tbl-cap: Shows the 5 Neighborhoods in 2023 with the lowest crime rates
+#| fig-cap: Shows the 5 Neighborhoods in 2023 with the lowest crime rates
 #| warning: false
 #| message: false
 
@@ -200,14 +197,7 @@ ggplot(top_5_neighborhoods, aes(x = reorder(AREA_NAME, Total_Crime_Rate), y = To
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ```
-```{r}
-#| echo: false
-#| eval: true
-#| label: tbl-modelresults
-#| tbl-cap: Explanatory models of flight time based on wing width and wing length
-#| warning: false
 
-```
 
 
 The comparison between crime rates in 2019 and 2023 provides insights into the potential impact of the COVID-19 pandemic on crime trends.
@@ -217,20 +207,17 @@ The comparison between crime rates in 2019 and 2023 provides insights into the p
 
 ## Changes in Crime Rates {#sec-first-point}
 
-
-Our analysis indicates a shift in the top 5 neighborhoods with the highest crime rates in Toronto from 2019 to 2023. To explore this further, we need to delve into the specific changes observed in each neighborhood.
+Using the 
+@fig-2019-high and @fig-2023-high show that the neighborhoods with the highest crime rates stayed the same; however there is a decrease in crime rates in all five of the neighborhoods. When comparing the neighborhoods with the lease crime rates which is @fig-2019-low and @fig-2023-high, there is a change in the neighborhood with the least crime rates alongside an increase in crime rates in the neighborhood. To explore this further, we need to delve into the specific changes observed in each neighborhood.
 
 ## Possible Factors 
 
-Several factors could contribute to changes in crime rates, including the socio-economic impact of the pandemic, changes in law enforcement strategies, and shifts in community dynamics.
+Several factors could contribute to changes in crime rates, including the economic impact of the pandemic, changes in law enforcement strategies, and shifts in community dynamics. Staying at home more may have increased action at home but not to people on the outside. On the other hand, criminals who are used to doing crimes may have found new neighborhoods that are easier to succeed which explains the increase of crime rates in new neighborhoods.
 
-## Implications 
-
-Understanding the dynamics of crime rate changes is crucial for policymakers, law enforcement, and communities to address potential challenges and implement effective strategies.
 
 ## Weaknesses and Next Steps
 
-While our analysis provides valuable insights, it is essential to acknowledge the limitations of our study. Further research could explore additional factors influencing crime rates and conduct a more detailed analysis of specific crime categories.
+While our analysis provides valuable insights, it is essential to acknowledge the limitations of our study. Further research could explore additional factors influencing crime rates and conduct a more detailed analysis of specific crime categories. As this study is just an overview on the change of crime rates, it does not incorporate any possible causes of the change. It is also important to look into different aspects of the pandemic causing possible changes. These are all really interesting directions to look into. 
 
 
 \newpage
