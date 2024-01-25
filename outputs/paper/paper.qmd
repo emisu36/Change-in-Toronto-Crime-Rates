@@ -1,14 +1,14 @@
- ---
-title: "My title"
-subtitle: "My subtitle if needed"
+---
+title: "Change in Crime Rates in Neighbourhoods of Toronto Before and After COVID-19"
+subtitle: "Exploring Crime Rate Dynamics in Torontos Neighborhoods Amidst the COVID-19 Pandemic"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Ping-Jen (Emily) Su
+thanks: "Code and data are available at: https://github.com/emisu36/Change-in-Toronto-Crime-Rates.git"
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This study looks into how Toronto neighborhood crime rates have been affected by the COVID-19 outbreak. Using pre-pandemic and post-pandemic crime statistics, we determine the top five neighbourhoods with the highest overall crime rates. This research shows that, following COVID-19, crime rates in these communities  decreased. The findings give policymakers and community stakeholders new information on the connection between a global health crisis and local criminal dynamics."
 format: pdf
+toc: true
 number-sections: true
 bibliography: references.bib
 ---
@@ -19,198 +19,218 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
+library(knitr) # To make tables
+library(opendatatoronto)
+library(janitor) # To clean datasets
+library(dplyr)
+library(ggplot2) # To make graphs
+library(sf) # To make maps
 ```
 
 
 # Introduction
+The COVID-19, the virus that affected everyone's daily life, forced changes into people's health and lifestyle, from masks to vaccines to social distancing. COVID-19 not only brought physical changes to prevent the spread of the virus but also the loss of economic output and impact on people's daily lives but salary and economic wise. According to the United Nations @United_Nations, the COVID-19 pandemic has pushed "more than 34 million people into extreme poverty in 2020" alongside increase in poverty and inequality. 
 
-You can and should cross-reference sections and sub-sections. 
-
-The remainder of this paper is structured as follows. @sec-data....
-
-
+While there is lacking in ones life especially when there is nothing to do during lockdown or different stay-at-home suggestions, people may easily turn to robbery, crime or even violence. During the COVID-19 pandemic, an increase in domestic violence was found due to the increase time staying at home along with the different emotions emerging due to the sudden change by @Bradbury_Jones_Isham_2020. Although the difference in lifestyle seems to cause negative impacts, there seems to be a general decrease in all crimes from a global analysis of how restrictions impacted crimes (@Nivette_Zahnow_Aguilar_Ahven_Amram_Ariel_Burbano_Astolfi_Baier_Bark_et_al_2021). Therefore, it is important to look into how COVID-19 affected the crime rates in different neighbourhoods of Toronto. 
 
 # Data {#sec-data}
+Tools by @citeR, @tidyverse and @janitor is used to clean and analyze the data collected from @opendatatoronto.
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
-
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
-
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
-
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-analysis_data <- read_csv(here::here("outputs/data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
-
-Talk way more about it. 
+We begin our analysis using crime data from Toronto neighborhoods. The dataset, obtained from Toronto Open Data @opendatatoronto, includes crime rates for various offenses in different neighborhoods. To focus on the top 5 neighborhoods with the highest total crime rates, we select and process the relevant data.
 
 
 
-# Model
+Our initial examination reveals the neighborhoods with the highest crime rates in 2019.
 
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
-
-## Model set-up
-
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
-
-\begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
-\end{align}
-
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
 
 
 # Results
 
-Our results are summarized in @tbl-modelresults.
+Next, we explore the crime rates for the same neighborhoods in 2023.
+
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-2019-high
+#| tbl-cap: Shows the 5 Neighborhoods in 2019 with the highest crime rates
+#| warning: false
+#| message: false
+crime_data_o <- read_csv("../../outputs/data/neighbourhood-crime-rates.csv")
+
+crime_data1 <- 
+  crime_data_o %>%
+  select(-geometry)
+
+crime_data1 <- crime_data1 %>%
+  select(AREA_NAME, ASSAULT_RATE_2019, AUTOTHEFT_RATE_2019, BIKETHEFT_RATE_2019, BREAKENTER_RATE_2019, HOMICIDE_RATE_2019, ROBBERY_RATE_2019, SHOOTING_RATE_2019, THEFTFROMMV_RATE_2019, THEFTOVER_RATE_2019) 
+
+# Create a new dataframe with the total crime rates for each neighborhood
+total_crime1 <- crime_data1 %>%
+  mutate(Total_Crime_Rate = ASSAULT_RATE_2019 + AUTOTHEFT_RATE_2019 + BIKETHEFT_RATE_2019 + BREAKENTER_RATE_2019 + HOMICIDE_RATE_2019 + ROBBERY_RATE_2019 + SHOOTING_RATE_2019 + THEFTFROMMV_RATE_2019 +THEFTOVER_RATE_2019) 
+total_crime1 <- total_crime1 %>% filter(Total_Crime_Rate != "NA")
+
+descend <- total_crime1[order(-total_crime1$Total_Crime_Rate), ]
+# Select the top 5 neighborhoods with the highest total crime rates
+
+top_5_neighborhoods1 <- descend %>%
+  head(n=5)
+
+# Plot the data using ggplot2
+ggplot(top_5_neighborhoods1, aes(x = reorder(AREA_NAME, -Total_Crime_Rate), y = Total_Crime_Rate)) +
+  geom_bar(stat = "identity", fill = "steelblue4", color = "black") +
+  labs(title = "Top 5 Neighborhoods with Highest Total Crime Rates",
+       x = "Neighborhood",
+       y = "Total Crime Rate per 100,000 population") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-2019-low
+#| tbl-cap: Shows the 5 Neighborhoods in 2019 with the lowest crime rates
+#| warning: false
+#| message: false
+
+
+# Create a new dataframe with the total crime rates for each neighborhood
+total_crime1 <- crime_data1 %>%
+  mutate(Total_Crime_Rate = ASSAULT_RATE_2019 + AUTOTHEFT_RATE_2019 + BIKETHEFT_RATE_2019 + BREAKENTER_RATE_2019 + HOMICIDE_RATE_2019 + ROBBERY_RATE_2019 + SHOOTING_RATE_2019 + THEFTFROMMV_RATE_2019 + THEFTOVER_RATE_2019) 
+total_crime1 <- total_crime1 %>% filter(!is.na(Total_Crime_Rate))  # Filter out NA values
+
+ascend <- total_crime1[order(total_crime1$Total_Crime_Rate), ]
+# Select the top 5 neighborhoods with the highest total crime rates
+
+# Select the top 5 neighborhoods with the lowest total crime rates
+bottom_5_neighborhoods1 <- ascend %>%
+  head(n = 5)
+
+# Plot the data using ggplot2 with a different color scheme and style
+ggplot(bottom_5_neighborhoods1, aes(x = reorder(AREA_NAME, Total_Crime_Rate), y = Total_Crime_Rate)) +
+  geom_bar(stat = "identity", fill = "steelblue1", color = "black") +  # Change color to lightgreen
+  labs(title = "Top 5 Neighborhoods with Lowest Total Crime Rates",  # Update title
+       x = "Neighborhood",
+       y = "Total Crime Rate per 100,000 population") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
 
 ```{r}
 #| echo: false
 #| eval: true
 #| warning: false
+#| label: fig-2023-high
+#| tbl-cap: Shows the 5 Neighborhoods in 2023 with the highest crime rates
 #| message: false
 
-library(rstanarm)
+# library(rstanarm)
 
-first_model <-
-  readRDS(file = here::here("outputs/models/first_model.rds"))
+# first_model <-
+#  readRDS(file = here::here("outputs/models/first_model.rds"))
+
+crime_data <- 
+  crime_data_o %>%
+  select(-geometry)
+
+crime_data <- crime_data %>%
+  select(AREA_NAME, ASSAULT_RATE_2023, AUTOTHEFT_RATE_2023, BIKETHEFT_RATE_2023, BREAKENTER_RATE_2023, HOMICIDE_RATE_2023, ROBBERY_RATE_2023, SHOOTING_RATE_2023, THEFTFROMMV_RATE_2023, THEFTOVER_RATE_2023) 
+
+# Create a new dataframe with the total crime rates for each neighborhood
+total_crime <- crime_data %>%
+  mutate(Total_Crime_Rate = ASSAULT_RATE_2023 + AUTOTHEFT_RATE_2023 + BIKETHEFT_RATE_2023 + BREAKENTER_RATE_2023 + HOMICIDE_RATE_2023 + ROBBERY_RATE_2023 + SHOOTING_RATE_2023 + THEFTFROMMV_RATE_2023 +THEFTOVER_RATE_2023) 
+total_crime <- total_crime %>% filter(Total_Crime_Rate != "NA")
+
+descend2023 <- total_crime[order(-total_crime$Total_Crime_Rate), ]
+# Select the top 5 neighborhoods with the highest total crime rates
+top_5_neighborhoods <- descend2023 %>%
+  head(n=5)
+
+
+# Plot the data using ggplot2
+ggplot(top_5_neighborhoods, aes(x = reorder(AREA_NAME, -Total_Crime_Rate), y = Total_Crime_Rate)) +
+  geom_bar(stat = "identity", fill = "seagreen4", color = "black") +
+  labs(title = "Top 5 Neighborhoods with Highest Total Crime Rates",
+       x = "Neighborhood",
+       y = "Total Crime Rate per 100,000 population") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
 ```
 
+```{r}
+#| echo: false
+#| eval: true
+#| label: fig-2023-low
+#| tbl-cap: Shows the 5 Neighborhoods in 2023 with the lowest crime rates
+#| warning: false
+#| message: false
+
+# library(rstanarm)
+
+# first_model <-
+#  readRDS(file = here::here("outputs/models/first_model.rds"))
+
+crime_data <- 
+  crime_data_o %>%
+  select(-geometry)
+
+crime_data <- crime_data %>%
+  select(AREA_NAME, ASSAULT_RATE_2023, AUTOTHEFT_RATE_2023, BIKETHEFT_RATE_2023, BREAKENTER_RATE_2023, HOMICIDE_RATE_2023, ROBBERY_RATE_2023, SHOOTING_RATE_2023, THEFTFROMMV_RATE_2023, THEFTOVER_RATE_2023) 
+
+# Create a new dataframe with the total crime rates for each neighborhood
+total_crime <- crime_data %>%
+  mutate(Total_Crime_Rate = ASSAULT_RATE_2023 + AUTOTHEFT_RATE_2023 + BIKETHEFT_RATE_2023 + BREAKENTER_RATE_2023 + HOMICIDE_RATE_2023 + ROBBERY_RATE_2023 + SHOOTING_RATE_2023 + THEFTFROMMV_RATE_2023 +THEFTOVER_RATE_2023) 
+total_crime <- total_crime %>% filter(Total_Crime_Rate != "NA")
+
+descend2023 <- total_crime[order(total_crime$Total_Crime_Rate), ]
+# Select the top 5 neighborhoods with the highest total crime rates
+top_5_neighborhoods <- descend2023 %>%
+  head(n=5)
+
+
+# Plot the data using ggplot2
+ggplot(top_5_neighborhoods, aes(x = reorder(AREA_NAME, Total_Crime_Rate), y = Total_Crime_Rate)) +
+  geom_bar(stat = "identity", fill = "seagreen1", color = "black") +
+  labs(title = "Top 5 Neighborhoods with Highest Total Crime Rates",
+       x = "Neighborhood",
+       y = "Total Crime Rate per 100,000 population") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
 ```{r}
 #| echo: false
 #| eval: true
 #| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| tbl-cap: Explanatory models of flight time based on wing width and wing length
 #| warning: false
 
-modelsummary::modelsummary(
-  list(
-    "First model" = first_model
-  ),
-  statistic = "mad",
-  fmt = 2
-)
 ```
 
 
+The comparison between crime rates in 2019 and 2023 provides insights into the potential impact of the COVID-19 pandemic on crime trends.
 
 
 # Discussion
 
-## First discussion point {#sec-first-point}
-
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
-
-## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
+## Changes in Crime Rates {#sec-first-point}
 
 
-# Additional data details
+Our analysis indicates a shift in the top 5 neighborhoods with the highest crime rates in Toronto from 2019 to 2023. To explore this further, we need to delve into the specific changes observed in each neighborhood.
 
-# Model details {#sec-model-details}
+## Possible Factors 
 
-## Posterior predictive check
+Several factors could contribute to changes in crime rates, including the socio-economic impact of the pandemic, changes in law enforcement strategies, and shifts in community dynamics.
 
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
+## Implications 
 
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
+Understanding the dynamics of crime rate changes is crucial for policymakers, law enforcement, and communities to address potential challenges and implement effective strategies.
 
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
+## Weaknesses and Next Steps
 
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
-
+While our analysis provides valuable insights, it is essential to acknowledge the limitations of our study. Further research could explore additional factors influencing crime rates and conduct a more detailed analysis of specific crime categories.
 
 
 \newpage

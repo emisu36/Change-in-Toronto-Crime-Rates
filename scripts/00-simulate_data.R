@@ -7,6 +7,8 @@
 
 # install.packages("tidyverse")
 # install.packages("janitor")
+install.packages("gitcreds")
+install.packages("credentials")
 
 #### Workspace setup ####
 library(tidyverse)
