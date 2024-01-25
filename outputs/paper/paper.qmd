@@ -49,12 +49,12 @@ Our initial examination reveals the neighborhoods with the highest crime rates i
 Next, we explore the crime rates for the same neighborhoods in 2023.
 
 ```{r}
-#| echo: false
-#| eval: true
 #| label: fig-2019-high
 #| tbl-cap: Shows the 5 Neighborhoods in 2019 with the highest crime rates
+#| echo: false
 #| warning: false
 #| message: false
+
 crime_data_o <- read_csv("../../outputs/data/neighbourhood-crime-rates.csv")
 
 crime_data1 <- 
